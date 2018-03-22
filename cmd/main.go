@@ -2,20 +2,22 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"os/exec"
 	"time"
 )
 
 var (
-	currentTurn = 1
-	totalTurns  = 5
-	shortBreak  = 5 * time.Minute
-	longBreak   = 15 * time.Minute
+	currentTurn    = 1
+	totalTurns     = 5
+	shortBreak     = 5 * time.Minute
+	longBreak      = 15 * time.Minute
+	pomodoroPeriod = 25 * time.Minute
 )
 
 func pomodoroTurn(chanPomodoro chan bool) {
 	say("Work work")
-	time.Sleep(time.Minute * 25)
+	time.Sleep(pomodoroPeriod)
 	say("Stop work")
 	chanPomodoro <- true
 }
@@ -28,7 +30,10 @@ func pomodoroBreak(chanBreak chan bool, t time.Duration) {
 }
 
 func say(message string) {
-	exec.Command("say", message).Output()
+	cmd := exec.Command("clear")
+	cmd.Stdout = os.Stdout
+	cmd.Run()
+	fmt.Println(message)
 }
 
 func pomodoroService(chanPomodoro, chanBreak, chanLongBreak, chanDone chan bool) {
