@@ -180,9 +180,13 @@ func (p *Terminal) Close() {
 	termbox.Close()
 }
 
+// Clear clears the whole screen before drawing
+func (p *Terminal) Clear() {
+	termbox.Clear(termbox.ColorBlack, termbox.ColorDefault)
+}
+
 // DrawText is used to draw a text at the bottom half of screen like hints or prompt
 func (p *Terminal) DrawText(text string) {
-	termbox.Clear(termbox.ColorBlack, termbox.ColorDefault)
 	w, h := termbox.Size()
 	// calculate where to draw the text
 	y := (h / 2) + (mainHeight / 2) + 1
@@ -191,12 +195,10 @@ func (p *Terminal) DrawText(text string) {
 		termbox.SetCell(x, y, c, termbox.ColorWhite, termbox.ColorDefault)
 		x++
 	}
-	termbox.Flush()
 }
 
 // DrawMain draws the main part of screen at the center of terminal
 func (p *Terminal) DrawMain(main []string) {
-	termbox.Clear(termbox.ColorBlack, termbox.ColorDefault)
 	w, h := termbox.Size()
 	// calculate where to draw the text
 	y := (h / 2) - ((mainHeight - 2) / 2)
@@ -210,7 +212,6 @@ func (p *Terminal) DrawMain(main []string) {
 		}
 		y++
 	}
-	termbox.Flush()
 }
 
 // DrawFooter draws the footer at the bottom of terminal screen
