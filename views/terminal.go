@@ -203,7 +203,9 @@ func (p *Terminal) DrawMain(main []string) {
 	for _, line := range main {
 		x := (w / 2) - (len(line) / 2)
 		for _, c := range line {
-			termbox.SetCell(x, y, c, termbox.ColorWhite, termbox.ColorDefault)
+			if string(c) == "#" {
+				termbox.SetCell(x, y, ' ', termbox.ColorWhite, termbox.ColorBlue)
+			}
 			x++
 		}
 		y++
