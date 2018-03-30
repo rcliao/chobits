@@ -2,13 +2,13 @@ package views
 
 import (
 	"bytes"
-	"fmt"
+	"strconv"
 	"strings"
 
 	termbox "github.com/nsf/termbox-go"
 )
 
-var mainHeight = 5
+var mainHeight = 7
 
 var largeInt = map[int]string{
 	1: `
@@ -22,7 +22,7 @@ var largeInt = map[int]string{
 #####
    ##
 #####
-##
+##   
 #####
 `,
 	3: `
@@ -41,14 +41,14 @@ var largeInt = map[int]string{
 `,
 	5: `
 #####
-##
+##   
 #####
    ##
 #####
 `,
 	6: `
 #####
-##
+##   
 #####
 ## ##
 #####
@@ -74,6 +74,37 @@ var largeInt = map[int]string{
    ##
    ##
 `,
+	0: `
+#####
+## ##
+## ##
+## ##
+#####
+`,
+}
+var colon = `
+ 
+#
+ 
+#
+ 
+`
+
+// ConvertClockToMain converts "12:34" to array of string for ease of drawing
+func ConvertClockToMain(clockStr string) []string {
+	result := []string{"", "", "", "", ""}
+	for _, c := range clockStr {
+		if string(c) == ":" {
+			result = concatArrayHorizontal(result, convertIntToArray(colon))
+			continue
+		}
+		i, err := strconv.Atoi(string(c))
+		if err != nil {
+			i = 0
+		}
+		result = concatArrayHorizontal(result, convertIntToArray(largeInt[i]))
+	}
+	return result
 }
 
 func convertIntToArray(intStr string) []string {
@@ -156,7 +187,6 @@ func (p *Terminal) DrawText(text string) {
 	// calculate where to draw the text
 	y := (h / 2) + (mainHeight / 2) + 1
 	x := (w / 2) - (len(text) / 2)
-	fmt.Println(w, h, x, y, text)
 	for _, c := range text {
 		termbox.SetCell(x, y, c, termbox.ColorWhite, termbox.ColorDefault)
 		x++
@@ -166,7 +196,19 @@ func (p *Terminal) DrawText(text string) {
 
 // DrawMain draws the main part of screen at the center of terminal
 func (p *Terminal) DrawMain(main []string) {
-
+	termbox.Clear(termbox.ColorBlack, termbox.ColorDefault)
+	w, h := termbox.Size()
+	// calculate where to draw the text
+	y := (h / 2) - ((mainHeight - 2) / 2)
+	for _, line := range main {
+		x := (w / 2) - (len(line) / 2)
+		for _, c := range line {
+			termbox.SetCell(x, y, c, termbox.ColorWhite, termbox.ColorDefault)
+			x++
+		}
+		y++
+	}
+	termbox.Flush()
 }
 
 // DrawFooter draws the footer at the bottom of terminal screen

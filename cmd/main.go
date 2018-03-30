@@ -5,6 +5,8 @@ import (
 	"os"
 	"os/exec"
 	"time"
+
+	"github.com/rcliao/tachikoma/views"
 )
 
 var (
@@ -72,13 +74,7 @@ func askAnotherSession() string {
 }
 
 func main() {
-	turn := make(chan bool)
-	smallBreak := make(chan bool)
-	longBreak := make(chan bool)
-	done := make(chan bool)
+	drawer, _ := views.NewTerminalView()
 
-	go pomodoroTurn(turn)
-	go pomodoroService(turn, smallBreak, longBreak, done)
-
-	<-done
+	drawer.DrawMain(views.ConvertClockToMain("20:55"))
 }
