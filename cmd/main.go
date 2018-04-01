@@ -6,7 +6,6 @@ import (
 	"os/exec"
 	"time"
 
-	termbox "github.com/nsf/termbox-go"
 	"github.com/rcliao/tachikoma/views"
 )
 
@@ -77,8 +76,9 @@ func askAnotherSession() string {
 func main() {
 	drawer, _ := views.NewTerminalView()
 
-	drawer.Clear()
-	drawer.DrawText("hello world")
-	drawer.DrawMain(views.ConvertClockToMain("20:55"))
-	termbox.Flush()
+	drawer.Draw(views.ViewData{
+		Main:   views.ConvertClockToMain("20:55"),
+		Text:   "hello world",
+		Footer: "Hello footer",
+	})
 }
